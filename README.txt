@@ -1,15 +1,15 @@
-HEALTHMATE - FULL STACK PROJECT MANAGEMENT & HEALTH PLANNER
+WELLNEST - FULL STACK PERSONALIZED HEALTH & FITNESS PLANNER
 Developed by: Manideep Bogireddy
 ---------------------------------------------------------
 
 PROJECT OVERVIEW:
-HealthMate is a comprehensive full-stack application designed to manage personal health goals as "projects". It allows users to track their physical progress, generate personalized diet and workout plans, and interact with a community of health enthusiasts.
+WellNest is a comprehensive full-stack application designed to manage personal health and fitness goals. It allows users to track their physical progress, generate personalized diet and workout plans, and interact with a community of health enthusiasts.
 
 TECH STACK:
-- Backend: Spring Boot 3.2, Spring Security, Spring Data MongoDB
+- Backend: Spring Boot 3.2, Spring Security, Spring Data JPA
 - Frontend: React.js, Vite, Axios, Lucide-React
-- Database: MongoDB Atlas (Cloud)
-- Authentication: JWT (JSON Web Tokens), Google OAuth2, OTP Verification
+- Database: MySQL Database
+- Authentication: JWT (JSON Web Tokens), Google OAuth2, Email OTP Verification
 - Deployment: Railway.app (CI/CD)
 
 CORE FEATURES:
@@ -19,13 +19,10 @@ CORE FEATURES:
 4. Social Ecosystem: Full blog system with comments, likes, and follows.
 5. Cloud Scalability: Fully responsive and hosted in a live production environment.
 
-LIVE APPLICATION URL:
-https://easygoing-curiosity-production.up.railway.app
-
 GITHUB REPOSITORY:
-https://github.com/ManideepBogireddy/healthmate-fullstack
+https://github.com/ManideepBogireddy/WellNest
 
 INSTALLATION (LOCAL):
 1. Clone the repository.
-2. Backend: Configure MongoDB URI in application.properties and run 'mvn spring-boot:run'.
+2. Backend: Configure MySQL credentials in application.properties and run 'mvn spring-boot:run'.
 3. Frontend: Run 'npm install' then 'npm run dev'.

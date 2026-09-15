@@ -1,17 +1,24 @@
 package com.healthmate.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.util.ArrayList;
 
-@Document(collection = "workout_plans")
+@Entity
+@Table(name = "workout_plans")
 public class WorkoutPlan {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String trainerId;
     private String programName;
     private String duration; // e.g., 4 weeks
+    @ElementCollection
     private List<String> exercises = new ArrayList<>();
     private String targetGoal;
 

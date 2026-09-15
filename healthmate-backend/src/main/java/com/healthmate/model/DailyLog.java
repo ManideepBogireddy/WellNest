@@ -1,13 +1,18 @@
 package com.healthmate.model;
 
-import org.springframework.data.annotation.Id;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Document(collection = "daily_logs")
+@Entity
+@Table(name = "daily_logs")
 public class DailyLog {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String userId;

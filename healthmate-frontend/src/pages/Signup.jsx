@@ -17,7 +17,15 @@ const Signup = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    // OTP Logic removed
+    
+    // OTP State for Signup
+    const [otp, setOtp] = useState("");
+    const [otpSent, setOtpSent] = useState(false);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [otpLoading, setOtpLoading] = useState(false);
+    const [otpMessage, setOtpMessage] = useState("");
+    const [otpError, setOtpError] = useState("");
+
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
@@ -66,10 +74,13 @@ const Signup = () => {
         return () => clearTimeout(timeoutId);
     }, [formData.username]);
 
-
     // Email Availability Check
     useEffect(() => {
         setEmailAvailable(false);
+        setIsEmailVerified(false);
+        setOtpSent(false);
+        setOtpMessage("");
+        setOtpError("");
         const checkEmail = async () => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(formData.email)) {
@@ -102,6 +113,38 @@ const Signup = () => {
         return () => clearTimeout(timeoutId);
     }, [formData.email]);
 
+    const handleSendOtp = async () => {
+        if (!emailAvailable || !formData.email) return;
+        setOtpLoading(true);
+        setOtpMessage("");
+        setOtpError("");
+        try {
+            await AuthService.sendSignupOtp(formData.email);
+            setOtpSent(true);
+            setOtpMessage("Verification OTP sent to your email!");
+        } catch (err) {
+            setOtpError(err.response?.data?.message || "Failed to send OTP.");
+        } finally {
+            setOtpLoading(false);
+        }
+    };
+
+    const handleVerifyOtp = async () => {
+        if (!otp) return;
+        setOtpLoading(true);
+        setOtpMessage("");
+        setOtpError("");
+        try {
+            await AuthService.verifyOtp(formData.email, otp);
+            setIsEmailVerified(true);
+            setOtpMessage("✓ Email Verified Successfully!");
+        } catch (err) {
+            setOtpError(err.response?.data?.message || "Invalid or Expired OTP.");
+        } finally {
+            setOtpLoading(false);
+        }
+    };
+
     const calculateStrength = (pass) => {
         let strength = 0;
         if (pass.length > 5) strength += 20;
@@ -122,7 +165,7 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        if (usernameError || emailError || !emailAvailable) {
+        if (usernameError || emailError || !emailAvailable || !isEmailVerified) {
             return;
         }
         if (formData.password !== formData.confirmPassword) {
@@ -185,6 +228,7 @@ const Signup = () => {
                             <p style={{ fontSize: '0.8rem', color: '#22c55e', marginTop: '5px' }}>Username is available</p>
                         )}
                     </div>
+                    
                     <div className="form-group">
                         <label>Email</label>
                         <input
@@ -193,12 +237,53 @@ const Signup = () => {
                             className="form-control"
                             onChange={handleChange}
                             style={{
-                                borderColor: emailError ? '#ef4444' : (emailAvailable ? '#22c55e' : ''),
+                                borderColor: emailError ? '#ef4444' : (isEmailVerified ? '#22c55e' : (emailAvailable ? '#3b82f6' : ''))
                             }}
+                            disabled={isEmailVerified}
                             required
                         />
                         {isCheckingEmail && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '5px' }}>Checking availability...</p>}
                         {emailError && <p style={{ fontSize: '0.8rem', color: '#ef4444', marginTop: '5px' }}>{emailError}</p>}
+                        
+                        {emailAvailable && !isEmailVerified && (
+                            <button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={otpLoading}
+                                className="btn btn-secondary"
+                                style={{ marginTop: '10px', fontSize: '0.9rem', padding: '0.75rem' }}
+                            >
+                                {otpLoading ? "Sending OTP..." : (otpSent ? "Resend OTP Code" : "Send Verification OTP")}
+                            </button>
+                        )}
+                        {otpMessage && <p style={{ fontSize: '0.85rem', color: '#22c55e', marginTop: '8px' }}>{otpMessage}</p>}
+                        {otpError && <p style={{ fontSize: '0.85rem', color: '#ef4444', marginTop: '8px' }}>{otpError}</p>}
+
+                        {/* Dedicated OTP Input Container */}
+                        {otpSent && !isEmailVerified && (
+                            <div style={{ marginTop: '15px', background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.2)' }}>
+                                <label style={{ color: '#3b82f6', fontWeight: '600', marginBottom: '8px', display: 'block' }}>
+                                    Enter 6-Digit OTP Code
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. 123456"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    className="form-control"
+                                    style={{ textAlign: 'center', fontSize: '1.2rem', letterSpacing: '4px', marginBottom: '10px' }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleVerifyOtp}
+                                    disabled={otpLoading || !otp}
+                                    className="btn btn-primary"
+                                    style={{ fontSize: '0.9rem', padding: '0.75rem' }}
+                                >
+                                    {otpLoading ? "Verifying..." : "Verify Code"}
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -375,6 +460,7 @@ const Signup = () => {
                         !!usernameError ||
                         !!emailError ||
                         !emailAvailable ||
+                        !isEmailVerified ||
                         formData.password.length < 8 ||
                         !/[A-Z]/.test(formData.password) ||
                         !/[0-9]/.test(formData.password)

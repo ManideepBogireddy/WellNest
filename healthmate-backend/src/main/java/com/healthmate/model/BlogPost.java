@@ -10,12 +10,24 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "blog_posts")
+@Entity
+@Table(name = "blog_posts")
+@EntityListeners(AuditingEntityListener.class)
 public class BlogPost {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String authorId;
     private String authorUsername;
@@ -27,18 +39,27 @@ public class BlogPost {
 
     @NotBlank
     @Size(min = 20)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @NotBlank
     private String category;
+
+    @ElementCollection
     private List<String> tags = new ArrayList<>();
     private String imageUrl;
+
+    @Enumerated(EnumType.STRING)
     private PostStatus status = PostStatus.PENDING;
     private int likes = 0;
+
+    @ElementCollection
     private List<String> likedBy = new ArrayList<>(); // User IDs
     private int commentCount = 0;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
     private String moderatorNotes;

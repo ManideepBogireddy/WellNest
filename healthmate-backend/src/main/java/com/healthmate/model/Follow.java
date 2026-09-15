@@ -1,16 +1,24 @@
 package com.healthmate.model;
 
 import com.healthmate.enums.FollowType;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
-@Document(collection = "follows")
+@Entity
+@Table(name = "follows")
 public class Follow {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String followerId;
     private String targetId; // Can be Trainer ID or Category Name
+    @Enumerated(EnumType.STRING)
     private FollowType type;
     private LocalDateTime createdAt;
 

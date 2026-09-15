@@ -1,12 +1,17 @@
 package com.healthmate.model;
 
 import java.time.LocalDateTime;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Document(collection = "moderation_logs")
+@Entity
+@Table(name = "moderation_logs")
 public class ModerationLog {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String moderatorId;
     private String action; // APPROVE, REJECT, DELETE, REQUEST_EDIT

@@ -1,13 +1,13 @@
 package com.healthmate.repository;
 
 import java.util.List;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.healthmate.model.BlogPost;
 import com.healthmate.enums.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface BlogPostRepository extends MongoRepository<BlogPost, String> {
+public interface BlogPostRepository extends JpaRepository<BlogPost, String> {
     List<BlogPost> findByStatus(PostStatus status);
 
     List<BlogPost> findByAuthorId(String authorId);

@@ -5,18 +5,28 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "comments")
+@Entity
+@Table(name = "comments")
+@EntityListeners(AuditingEntityListener.class)
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String postId;
     private String authorId;
     private String authorUsername;
     @NotBlank
     @Size(min = 2, max = 500)
+    @Column(length = 500)
     private String content;
     private String parentCommentId;
     private String status; // APPROVED, PENDING, SPAM

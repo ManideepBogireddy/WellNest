@@ -1,12 +1,17 @@
 package com.healthmate.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Document(collection = "workouts")
+@Entity
+@Table(name = "workouts")
 public class Workout {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String userId; // Links the workout to a specific user

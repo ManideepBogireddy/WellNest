@@ -1,13 +1,21 @@
 package com.healthmate.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Document(collection = "roles")
+@Entity
+@Table(name = "roles")
 public class Role {
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
+  @Enumerated(EnumType.STRING)
   private ERole name;
 
   public Role() {

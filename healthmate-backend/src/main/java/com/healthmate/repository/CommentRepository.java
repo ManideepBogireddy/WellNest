@@ -1,10 +1,10 @@
 package com.healthmate.repository;
 
 import java.util.List;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.healthmate.model.Comment;
 
-public interface CommentRepository extends MongoRepository<Comment, String> {
+public interface CommentRepository extends JpaRepository<Comment, String> {
     List<Comment> findByPostId(String postId);
 
     List<Comment> findByPostIdAndStatus(String postId, String status);

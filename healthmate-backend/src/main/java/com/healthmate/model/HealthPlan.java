@@ -1,13 +1,23 @@
 package com.healthmate.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.time.LocalDate;
 
-@Document(collection = "health_plans")
+@Entity
+@Table(name = "health_plans")
 public class HealthPlan {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String userId; // Link to user
@@ -19,7 +29,10 @@ public class HealthPlan {
     private String dailyWaterIntake; // e.g. "3 Liters"
     private String sleepRecommendation; // e.g. "7-8 Hours"
 
+    @ElementCollection
     private List<String> dietPlan; // List of meals/suggestions
+
+    @ElementCollection
     private List<String> exercisePlan; // List of exercises
 
     private String goal; // e.g. "Weight Loss"
@@ -28,15 +41,24 @@ public class HealthPlan {
     private int carbsGrams;
     private int fatsGrams;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "health_plan_id")
     private List<MealSuggestion> mealSuggestions;
 
+    @Entity
+    @Table(name = "health_plan_meal_suggestions")
     public static class MealSuggestion {
+        @Id
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private String id;
         private String mealType; // Breakfast, Lunch, etc.
         private int calories;
         private int protein;
         private int carbs;
         private int fats;
         private String suggestion; // e.g., "Oatmeal with Almonds"
+
+        @ElementCollection
         private List<String> alternatives; // Backup meal options
 
         public MealSuggestion() {
@@ -54,6 +76,14 @@ public class HealthPlan {
         }
 
         // Getters and Setters
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
         public String getMealType() {
             return mealType;
         }

@@ -2,23 +2,35 @@ package com.healthmate.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-
-@Document(collection = "trainers")
+@Entity
+@Table(name = "trainers")
+@EntityListeners(AuditingEntityListener.class)
 public class Trainer {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String userId; // Reference to User ID
     @NotBlank
     private String name;
     @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String bio;
+
+    @ElementCollection
     private List<String> specialties = new ArrayList<>(); // e.g., Yoga, HIIT, Strength
     private String experience;
     private double rating = 0.0;
@@ -37,6 +49,8 @@ public class Trainer {
     @LastModifiedDate
     private LocalDateTime updatedAt;
     private String availability; // Weekly/Flexible
+
+    @ElementCollection
     private List<String> compatibleGoals = new ArrayList<>(); // weight loss, muscle gain
     private String imageUrl;
 

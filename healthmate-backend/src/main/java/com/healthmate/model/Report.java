@@ -1,12 +1,17 @@
 package com.healthmate.model;
 
 import java.time.LocalDateTime;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Document(collection = "reports")
+@Entity
+@Table(name = "reports")
 public class Report {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String reporterId;
     private String contentType; // BLOG_POST, COMMENT
